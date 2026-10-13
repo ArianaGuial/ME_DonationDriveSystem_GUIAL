@@ -60,7 +60,7 @@
       </tr>
     </thead>
     <tbody id="campaignTable">
-      <tr><td colspan="7" style="text-align:center;">Loading...</td></tr>
+      <tr><td colspan="7" style="text-align:center;">loading...</td></tr>
     </tbody>
   </table>
 
@@ -99,12 +99,12 @@
         const data = await res.json();
         tableBody.innerHTML = data.length
           ? data.map(renderRow).join('')
-          : '<tr><td colspan="7" style="text-align:center;">No campaigns found.</td></tr>';
+          : '<tr><td colspan="7" style="text-align:center;">no campaigns found</td></tr>';
       } 
 
       catch(err) 
       {
-        showMessage('Failed to load campaigns.', true);
+        showMessage('failed to load campaigns.', true);
       }
     }
 
@@ -114,7 +114,7 @@
 
       if(!id)
       {
-        showMessage('Please enter a campaign ID.', true);
+        showMessage('please enter a campaign ID', true);
         return;
       }
 
@@ -126,17 +126,17 @@
         if(!res.ok) 
         {
           showMessage(data.error, true);
-          tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No match found.</td></tr>';
+          tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">no match found.</td></tr>';
           return;
         }
 
         tableBody.innerHTML = renderRow(data);
-        showMessage('Campaign found!');
+        showMessage('campaign found!');
       } 
       
       catch(err) 
       {
-        showMessage('Failed to search campaign.', true);
+        showMessage('failed to search campaign.', true);
       }
     }
 
@@ -149,13 +149,13 @@
 
       if(!campaign_name || isNaN(target_amount) || isNaN(collected_amount) || !deadline) 
       {
-        showMessage('Please fill in all fields.', true);
+        showMessage('please fill in all fields.', true);
         return;
       }
 
       if(collected_amount > target_amount) 
       {
-        showMessage('Collected amount cannot exceed target amount.', true);
+        showMessage('collected amount cannot exceed target amount', true);
         return;
       }
 
@@ -176,7 +176,7 @@
           return;
         }
 
-        showMessage('Campaign added successfully!');
+        showMessage('campaign added successfully');
         document.getElementById('campaign_name').value = '';
         document.getElementById('target_amount').value = '';
         document.getElementById('collected_amount').value = '';
@@ -186,13 +186,13 @@
       
       catch(err) 
       {
-        showMessage('Failed to add campaign.', true);
+        showMessage('failed to add campaign', true);
       }
     }
 
     async function deleteCampaign(id) 
     {
-      if(!confirm('Delete this campaign?')) 
+      if(!confirm('delete this campaign?')) 
       {
         return;
       }
@@ -208,13 +208,13 @@
           return;
         }
 
-        showMessage('Campaign deleted successfully!');
+        showMessage('campaign deleted successfully');
         getAll();
       } 
       
       catch(err) 
       {
-        showMessage('Failed to delete campaign.', true);
+        showMessage('failed to delete campaign', true);
       }
     }
 

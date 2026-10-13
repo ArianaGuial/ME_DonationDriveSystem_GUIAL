@@ -21,10 +21,10 @@
     "deadline": "2025-01-20"
   },
   {
-    "id": 4,
-    "campaign_name": "typhoon relief fund",
-    "target_amount": 50000,
-    "collected_amount": 25000,
-    "deadline": "2014-02-12"
+    "id": 5,
+    "campaign_name": "test campaign",
+    "target_amount": 10000,
+    "collected_amount": 9000,
+    "deadline": "2026-10-13"
   }
 ]

@@ -43,7 +43,7 @@ app.get('/api/campaigns/:id', function(req, res)
 
   if(!campaign) 
   {
-    return res.status(404).json({ error: 'Campaign not found' });
+    return res.status(404).json({ error: 'campaign not found' });
   }
 
   res.json(campaign);
@@ -58,7 +58,7 @@ app.post('/api/campaigns', function(req, res)
 
   if(!campaign_name || target_amount === undefined || collected_amount === undefined || !deadline) 
   {
-    return res.status(400).json({ error: 'Please fill in all fields.' });
+    return res.status(400).json({ error: 'please fill in all fields' });
   }
 
   const target = parseFloat(target_amount);
@@ -66,12 +66,12 @@ app.post('/api/campaigns', function(req, res)
 
   if(isNaN(target) || isNaN(collected)) 
   {
-    return res.status(400).json({ error: 'Amounts must be valid numbers.' });
+    return res.status(400).json({ error: 'amounts must be valid numbers.' });
   }
 
   if(collected > target) 
   {
-    return res.status(400).json({ error: 'Collected amount cannot exceed the target amount.' });
+    return res.status(400).json({ error: 'collected amount cannot exceed the target amount' });
   }
 
   const campaigns = readData();
@@ -105,13 +105,13 @@ app.delete('/api/campaigns/:id', function(req, res)
 
   if(index === -1) 
   {
-    return res.status(404).json({ error: 'Campaign not found' });
+    return res.status(404).json({ error: 'campaign not found' });
   }
 
   campaigns.splice(index, 1);
   writeData(campaigns);
 
-  res.json({ message: 'Campaign deleted' });
+  res.json({ message: 'campaign deleted' });
 });
 
 app.listen(port, function() 
