@@ -18,7 +18,7 @@
     th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
     th { background: #34495e; color: white; }
     tr:hover { background: #f9f9f9; }
-    .success { color: #004b1f; font-weight: bold; margin: 10px 0; }
+    .success { color: #00b84c; font-weight: bold; margin: 10px 0; }
     .error { color: #ff1900; font-weight: bold; margin: 10px 0; }
     .remaining { font-weight: bold; color: #000000; }
     .search-row { display: flex; gap: 10px; margin: 15px 0; }
@@ -102,7 +102,7 @@
           : '<tr><td colspan="7" style="text-align:center;">No campaigns found.</td></tr>';
       } 
 
-      catch (err) 
+      catch(err) 
       {
         showMessage('Failed to load campaigns.', true);
       }
@@ -112,7 +112,7 @@
     {
       const id = document.getElementById('searchId').value;
 
-      if (!id)
+      if(!id)
       {
         showMessage('Please enter a campaign ID.', true);
         return;
@@ -123,7 +123,7 @@
         const res = await fetch('/api/campaigns/' + id);
         const data = await res.json();
 
-        if (!res.ok) 
+        if(!res.ok) 
         {
           showMessage(data.error, true);
           tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No match found.</td></tr>';
@@ -134,7 +134,7 @@
         showMessage('Campaign found!');
       } 
       
-      catch (err) 
+      catch(err) 
       {
         showMessage('Failed to search campaign.', true);
       }
@@ -147,13 +147,13 @@
       const collected_amount = parseFloat(document.getElementById('collected_amount').value);
       const deadline = document.getElementById('deadline').value;
 
-      if (!campaign_name || isNaN(target_amount) || isNaN(collected_amount) || !deadline) 
+      if(!campaign_name || isNaN(target_amount) || isNaN(collected_amount) || !deadline) 
       {
         showMessage('Please fill in all fields.', true);
         return;
       }
 
-      if (collected_amount > target_amount) 
+      if(collected_amount > target_amount) 
       {
         showMessage('Collected amount cannot exceed target amount.', true);
         return;
@@ -169,7 +169,8 @@
         });
 
         const data = await res.json();
-        if (!res.ok) 
+
+        if(!res.ok) 
         {
           showMessage(data.error, true);
           return;
@@ -183,7 +184,7 @@
         getAll();
       } 
       
-      catch (err) 
+      catch(err) 
       {
         showMessage('Failed to add campaign.', true);
       }
@@ -191,7 +192,7 @@
 
     async function deleteCampaign(id) 
     {
-      if (!confirm('Delete this campaign?')) 
+      if(!confirm('Delete this campaign?')) 
       {
         return;
       }
@@ -201,7 +202,7 @@
         const res = await fetch('/api/campaigns/' + id, { method: 'DELETE' });
         const data = await res.json();
 
-        if (!res.ok) 
+        if(!res.ok) 
         {
           showMessage(data.error, true);
           return;
@@ -211,7 +212,7 @@
         getAll();
       } 
       
-      catch (err) 
+      catch(err) 
       {
         showMessage('Failed to delete campaign.', true);
       }
