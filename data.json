@@ -1,0 +1,30 @@
+[
+  {
+    "id": 1,
+    "campaign_name": "Typhoon Relief Fund",
+    "target_amount": 50000,
+    "collected_amount": 25000,
+    "deadline": "2024-12-31"
+  },
+  {
+    "id": 2,
+    "campaign_name": "School Supplies Drive",
+    "target_amount": 30000,
+    "collected_amount": 12000,
+    "deadline": "2024-11-15"
+  },
+  {
+    "id": 3,
+    "campaign_name": "Medical Mission",
+    "target_amount": 100000,
+    "collected_amount": 45000,
+    "deadline": "2025-01-20"
+  },
+  {
+    "id": 4,
+    "campaign_name": "typhoon relief fund",
+    "target_amount": 50000,
+    "collected_amount": 25000,
+    "deadline": "2014-02-12"
+  }
+]

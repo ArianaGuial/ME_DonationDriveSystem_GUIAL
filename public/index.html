@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Donation Drive System</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1000px; margin: 30px auto; padding: 20px; background: #f5f5f5; }
+    h1 { color: #000000; }
+    h2 { color: #000000; margin-top: 30px; }
+    .form-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 15px 0; }
+    input { padding: 10px; border: 1px solid #ccc; border-radius: 5px; flex: 1; min-width: 150px; }
+    button { padding: 10px 20px; background: #000000; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:hover { background: #000000; }
+    button.delete { background: #ff1900; padding: 6px 12px; font-size: 12px; }
+    button.delete:hover { background: #ff1900; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+    th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+    th { background: #34495e; color: white; }
+    tr:hover { background: #f9f9f9; }
+    .success { color: #004b1f; font-weight: bold; margin: 10px 0; }
+    .error { color: #ff1900; font-weight: bold; margin: 10px 0; }
+    .remaining { font-weight: bold; color: #000000; }
+    .search-row { display: flex; gap: 10px; margin: 15px 0; }
+  </style>
+</head>
+<body>
+
+  <h1>Donation Drive Management System</h1>
+
+  <div id="message"></div>
+
+  <h2>Add New Campaign</h2>
+  <div class="form-row">
+    <input id="campaign_name" placeholder="Campaign Name" />
+    <input id="target_amount" type="number" placeholder="Target Amount" />
+    <input id="collected_amount" type="number" placeholder="Collected Amount" />
+    <input id="deadline" type="date" />
+    <button onclick="addCampaign()">Add Campaign</button>
+  </div>
+
+  <h2>Search Campaign by ID</h2>
+  <div class="search-row">
+    <input id="searchId" type="number" placeholder="Enter Campaign ID" />
+    <button onclick="getOne()">Search</button>
+    <button onclick="getAll()">Show All</button>
+  </div>
+
+  <h2>All Campaigns</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Campaign Name</th>
+        <th>Target</th>
+        <th>Collected</th>
+        <th>Remaining</th>
+        <th>Deadline</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="campaignTable">
+      <tr><td colspan="7" style="text-align:center;">Loading...</td></tr>
+    </tbody>
+  </table>
+
+  <script>
+    const tableBody = document.getElementById('campaignTable');
+    const messageDiv = document.getElementById('message');
+
+    function showMessage(text, isError = false) 
+    {
+      messageDiv.textContent = text;
+      messageDiv.className = isError ? 'error' : 'success';
+      setTimeout(() => { messageDiv.textContent = ''; messageDiv.className = ''; }, 3000);
+    }
+
+    function renderRow(c) 
+    {
+      const remaining = c.target_amount - c.collected_amount;
+      return `
+        <tr>
+          <td>${c.id}</td>
+          <td>${c.campaign_name}</td>
+          <td>₱${c.target_amount.toLocaleString()}</td>
+          <td>₱${c.collected_amount.toLocaleString()}</td>
+          <td class="remaining">₱${remaining.toLocaleString()}</td>
+          <td>${c.deadline}</td>
+          <td><button class="delete" onclick="deleteCampaign(${c.id})">Delete</button></td>
+        </tr>
+      `;
+    }
+
+    async function getAll() 
+    {
+      try 
+      {
+        const res = await fetch('/api/campaigns');
+        const data = await res.json();
+        tableBody.innerHTML = data.length
+          ? data.map(renderRow).join('')
+          : '<tr><td colspan="7" style="text-align:center;">No campaigns found.</td></tr>';
+      } 
+
+      catch (err) 
+      {
+        showMessage('Failed to load campaigns.', true);
+      }
+    }
+
+    async function getOne() 
+    {
+      const id = document.getElementById('searchId').value;
+
+      if (!id)
+      {
+        showMessage('Please enter a campaign ID.', true);
+        return;
+      }
+
+      try 
+      {
+        const res = await fetch('/api/campaigns/' + id);
+        const data = await res.json();
+
+        if (!res.ok) 
+        {
+          showMessage(data.error, true);
+          tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No match found.</td></tr>';
+          return;
+        }
+
+        tableBody.innerHTML = renderRow(data);
+        showMessage('Campaign found!');
+      } 
+      
+      catch (err) 
+      {
+        showMessage('Failed to search campaign.', true);
+      }
+    }
+
+    async function addCampaign() 
+    {
+      const campaign_name = document.getElementById('campaign_name').value;
+      const target_amount = parseFloat(document.getElementById('target_amount').value);
+      const collected_amount = parseFloat(document.getElementById('collected_amount').value);
+      const deadline = document.getElementById('deadline').value;
+
+      if (!campaign_name || isNaN(target_amount) || isNaN(collected_amount) || !deadline) 
+      {
+        showMessage('Please fill in all fields.', true);
+        return;
+      }
+
+      if (collected_amount > target_amount) 
+      {
+        showMessage('Collected amount cannot exceed target amount.', true);
+        return;
+      }
+
+      try 
+      {
+        const res = await fetch('/api/campaigns', 
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ campaign_name, target_amount, collected_amount, deadline })
+        });
+
+        const data = await res.json();
+        if (!res.ok) 
+        {
+          showMessage(data.error, true);
+          return;
+        }
+
+        showMessage('Campaign added successfully!');
+        document.getElementById('campaign_name').value = '';
+        document.getElementById('target_amount').value = '';
+        document.getElementById('collected_amount').value = '';
+        document.getElementById('deadline').value = '';
+        getAll();
+      } 
+      
+      catch (err) 
+      {
+        showMessage('Failed to add campaign.', true);
+      }
+    }
+
+    async function deleteCampaign(id) 
+    {
+      if (!confirm('Delete this campaign?')) 
+      {
+        return;
+      }
+      
+      try 
+      {
+        const res = await fetch('/api/campaigns/' + id, { method: 'DELETE' });
+        const data = await res.json();
+
+        if (!res.ok) 
+        {
+          showMessage(data.error, true);
+          return;
+        }
+
+        showMessage('Campaign deleted successfully!');
+        getAll();
+      } 
+      
+      catch (err) 
+      {
+        showMessage('Failed to delete campaign.', true);
+      }
+    }
+
+    getAll();
+  </script>
+</body>
+</html>
